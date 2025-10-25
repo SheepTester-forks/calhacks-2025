@@ -14,10 +14,9 @@ This project merges the analytical power of ad intelligence with the dynamic, un
 
 - **Frontend:** Next.js, React, Tailwind CSS
 - **Backend:** Node.js, Express
-- **Real-time Communication:** LiveKit (for chat and potential voice features)
 - **AI & Machine Learning:**
   - **Ad Analysis:** Reka API (for multi-modal analysis)
-  - **AI Personas:** Claude, Janitor AI, Fetch.ai
+  - **AI Personas:** Claude, Janitor AI
   - **Voice Generation:** Fish Audio
 - **Deployment:** Vercel, Docker
 
@@ -39,7 +38,6 @@ This project merges the analytical power of ad intelligence with the dynamic, un
     - View the analysis results on a clean, visual dashboard.
     - Observe the live chat simulation.
     - (Future) Interact with the AI agents to ask follow-up questions.
-5.  **Voice Integration (Stretch Goal):** Use LiveKit and Fish Audio to allow users to talk to the AI agents and hear their responses.
 
 ---
 

@@ -11,9 +11,7 @@ Here are five detailed hackathon project ideas, each designed to incorporate a m
 **Prizes Targeted:**
 
 - **Janitor AI - Build a Multiplayer AI Chat Experience:** This is the core of the project. The platform will be a real-time chat room where multiple users can interact with the same AI characters simultaneously.
-- **Fetch.ai - Best Use of Fetch.ai, Best Deployment of Agentverse, Most Viral ASI:** Each AI persona will be a Fetch.ai agent registered on Agentverse. We'll use Claude as the reasoning engine for some agents. We would aim to create a few "viral" AI personalities with unique quirks and humor.
 - **Claude - Best Use of Claude:** At least one of the core AI personas will be powered by Claude, showcasing its ability to maintain a consistent personality and engage in long-term, contextual conversations.
-- **LiveKit - Most Creative Project, Most Complex / Technically Challenging:** We can use LiveKit to add a voice chat feature, allowing users to talk to the AI agents in real-time, with the AI responding in a generated voice. This would be a technically complex and creative use of their framework.
 - **Fish Audio - Best Use of Fish Audio:** The voices for the AI agents will be generated using Fish Audio, creating emotionally rich and expressive text-to-speech.
 - **Creao - Best Designed Web App, Smartest AI agent prize:** We will focus on a polished, intuitive UI for the social simulator. The AI agents will be designed with complex logic to make them "smart".
 - **Wordware - Most Wacky Hack:** The emergent, unpredictable interactions between the various AI agents and human users could lead to some truly wacky and hilarious outcomes.
@@ -77,7 +75,6 @@ Here are five detailed hackathon project ideas, each designed to incorporate a m
 
 - **Postman - Best Use of Postman:** The core of the project is a visual flow builder, similar to Postman Flows. We will use the AI Agent block for planning and orchestrate calls to at least two external services.
 - **Composio - Best use of Composio Toolrouter:** Composio would be the backbone of our tool, providing out-of-the-box access to thousands of tools and handling authentication, so users can easily integrate apps like Slack, GitHub, and Notion into their workflows.
-- **Fetch.ai - Best Use of Fetch.ai / Best Deployment of Agentverse:** Each "node" or "skill" in our workflow builder could be a discoverable agent on Agentverse, allowing users to find and incorporate new capabilities into their flows.
 - **Lava - Best Use of Lava Gateway:** We would use Lava to manage access to various LLMs that could power different agents in the workflow, allowing users to choose the best model for each task and tracking usage seamlessly.
 - **Interaction Company - Best MCP Automation:** The workflows created in our tool would be a form of "super-automation," going beyond simple triggers to perform complex, multi-step actions.
 - **Conversion - Best Workflow Application:** This project is the epitome of a workflow application.

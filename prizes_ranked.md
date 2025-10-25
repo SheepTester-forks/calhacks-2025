@@ -20,10 +20,6 @@ These prizes are directly aligned with the core features of AdSim and are the pr
     - **Fit:** Perfect. Claude is ideal for creating the nuanced, consistent, and engaging AI personas that form the simulated audience.
     - **Implementation:** Power several of the key AI personas with Claude.
 
-4.  **Fetch.ai - Best Use of Fetch.ai / Best Deployment of Agentverse:**
-    - **Fit:** Perfect. Modeling each AI persona as an autonomous agent on the Agentverse is a natural architectural fit that adds a layer of sophistication.
-    - **Implementation:** Each AI persona will be a Fetch.ai agent, discoverable and interactive through the Agentverse.
-
 ---
 
 ### Tier 2: High-Impact Prizes (Enhance the Core Project)
@@ -38,9 +34,6 @@ These prizes add significant value and are highly achievable stretch goals.
     - **Fit:** Excellent. The project aims for a polished UI (`Best Designed`), complex agent interactions (`Smartest AI`), and is a tool for marketers (`Productivity Tool`).
     - **Implementation:** Focus on a clean UI and highlight the emergent intelligence of the multi-agent system.
 
-7.  **LiveKit - Most Creative Project / Most Complex & Technically Challenging:**
-    - **Fit:** Excellent. Adding real-time voice chat for users to "talk" to the AI agents would be a highly creative and technically complex feature.
-    - **Implementation:** Integrate LiveKit for real-time audio streaming between the user and the AI agents.
 
 8.  **Fish Audio - Best Use of Fish Audio:**
     - **Fit:** Excellent. A natural extension of the LiveKit integration, using Fish Audio for high-quality, expressive text-to-speech for the agents' voices.
@@ -96,7 +89,7 @@ These prizes are not a good match for the AdSim project concept.
   - **Reasoning:** The project's domain is advertising and marketing, not healthcare or clinical trials. The problems being solved are fundamentally different.
 
 - **Specific Technology Prizes (Elastic):**
-  - **Reasoning:** The project's architecture is already centered on Fetch.ai, Claude, and Janitor AI for the agent system. Integrating Elastic's agent builder would be redundant and counter-productive.
+  - **Reasoning:** The project's architecture is already centered on Claude, and Janitor AI for the agent system. Integrating Elastic's agent builder would be redundant and counter-productive.
 
 - **Social Impact Prizes (Promise, Social Impact):**
   - **Reasoning:** While one could argue for an indirect social benefit, the project's primary purpose is commercial and aimed at a business audience. It lacks the direct public service focus required for these prizes.
