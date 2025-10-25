@@ -1,3 +1,5 @@
+[![beg jules](Docs/beg_jules.svg)](https://github.com/SheepTester-forks/calhacks-2025/issues/new?template=jules_issue_template.md)
+
 # AdSim: The AI-Powered Ad Simulator & Focus Group
 
 **AdSim** is a revolutionary platform that allows marketing professionals to test and analyze their creative advertisements against a simulated audience of diverse AI personas.

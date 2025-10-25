@@ -33,7 +33,13 @@ export const analyzeAd = async (
       },
       body: JSON.stringify({
         media_url: adCreative,
-        analysis_tasks: ['sentiment', 'tone', 'objects', 'demographic_prediction', 'summary'],
+        analysis_tasks: [
+          'sentiment',
+          'tone',
+          'objects',
+          'demographic_prediction',
+          'summary',
+        ],
       }),
     });
 
@@ -44,11 +50,11 @@ export const analyzeAd = async (
 
     const data = await response.json();
     return {
-        sentiment: data.sentiment,
-        tone: data.tone,
-        objects: data.objects,
-        demographic: data.demographic_prediction,
-        summary: data.summary,
+      sentiment: data.sentiment,
+      tone: data.tone,
+      objects: data.objects,
+      demographic: data.demographic_prediction,
+      summary: data.summary,
     };
   } catch (error) {
     console.error('Error calling Reka API:', error);
