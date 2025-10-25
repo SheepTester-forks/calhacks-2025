@@ -145,6 +145,7 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
   return new Promise((resolve, reject) => {
     let timeout;
     let isStalled = false;
+    let stallStartTime;
 
     const startTimeout = () => {
       clearTimeout(timeout);
@@ -153,13 +154,25 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
           `[Chunk ${chunkIndex}] No data received for 10 seconds. Download may be stalled.`
         );
         isStalled = true;
+        stallStartTime = Date.now();
       }, 10000);
     };
 
-    stream.on('data', () => {
+    stream.on('data', (chunk) => {
       if (isStalled) {
+        const stallDuration = (Date.now() - stallStartTime) / 1000; // in seconds
+        const bytesReceived = chunk.length;
+        const mbps =
+          stallDuration > 0
+            ? (bytesReceived * 8) / (stallDuration * 1000000)
+            : 0;
+
         console.log(
-          `[Chunk ${chunkIndex}] Data received. Download has resumed.`
+          `[Chunk ${chunkIndex}] Data received. Download has resumed. Stall lasted ${stallDuration.toFixed(
+            2
+          )}s. Received ${bytesReceived} bytes (average rate over stall: ${mbps.toFixed(
+            2
+          )} Mbps).`
         );
         isStalled = false;
       }
