@@ -81,21 +81,33 @@ async function getDownloadUrlAndCookies() {
 }
 
 async function getFileSize(url, cookies) {
-  console.log('Fetching file size with HEAD...');
-  const response = await axios.head(url, {
+  console.log('Fetching file size with partial GET...');
+  const response = await axios.get(url, {
     headers: {
       Cookie: cookies.join('; '),
+      Range: 'bytes=0-0',
       'User-Agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     },
     maxRedirects: 5,
   });
-  const contentLength = response.headers['content-length'];
-  if (!contentLength || parseInt(contentLength, 10) <= 0) {
+
+  const contentRange = response.headers['content-range'];
+  if (!contentRange) {
+    throw new Error('Content-Range header not found in response.');
+  }
+
+  const sizeMatch = contentRange.match(/\/(\d+)/);
+  if (!sizeMatch || !sizeMatch[1]) {
+    throw new Error(`Could not parse file size from Content-Range: ${contentRange}`);
+  }
+
+  const contentLength = parseInt(sizeMatch[1], 10);
+  if (contentLength <= 0) {
     throw new Error(`Invalid content-length received: ${contentLength}`);
   }
   console.log('File size:', contentLength);
-  return parseInt(contentLength, 10);
+  return contentLength;
 }
 
 async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
@@ -128,6 +140,8 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
   console.log(
     `Downloading chunk ${chunkIndex}/${totalChunks - 1} (bytes ${start}-${end})...`
   );
+
+  const startTime = Date.now();
 
   const response = await axios.get(url, {
     headers: {
@@ -184,6 +198,42 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
 
     writer.on('finish', () => {
       clearTimeout(timeout);
+      const endTime = Date.now();
+      const durationInSeconds = (endTime - startTime) / 1000;
+      const chunkSizeInBytes = end - start + 1;
+      const speedInMbps = (chunkSizeInBytes * 8) / (durationInSeconds * 1000000);
+      const remainingChunks = totalChunks - (chunkIndex + 1);
+      const etrInSeconds = remainingChunks * durationInSeconds;
+
+      const formatEtr = (seconds) => {
+        const h = Math.floor(seconds / 3600)
+          .toString()
+          .padStart(2, '0');
+        const m = Math.floor((seconds % 3600) / 60)
+          .toString()
+          .padStart(2, '0');
+        const s = Math.floor(seconds % 60)
+          .toString()
+          .padStart(2, '0');
+        return `${h}:${m}:${s}`;
+      };
+
+      const getSpeedDescription = (mbps) => {
+        if (mbps < 1) return '1/5 "abysmally slow"';
+        if (mbps < 10) return '2/5 "very slow"';
+        if (mbps < 50) return '3/5 "moderate"';
+        if (mbps < 100) return '4/5 "fast"';
+        return '5/5 "very fast"';
+      };
+
+      console.log(`  Chunk downloaded in ${durationInSeconds.toFixed(2)}s`);
+      console.log(
+        `  Speed: ${speedInMbps.toFixed(
+          2
+        )} Mbps (${getSpeedDescription(speedInMbps)})`
+      );
+      console.log(`  ETR: ${formatEtr(etrInSeconds)}`);
+
       resolve();
     });
 
