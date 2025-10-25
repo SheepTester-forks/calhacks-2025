@@ -28,7 +28,12 @@ export const createLiveKitRoom = async (
     identity: participantName,
   });
 
-  at.addGrant({ room: roomName, roomJoin: true, canPublish: true, canSubscribe: true });
+  at.addGrant({
+    room: roomName,
+    roomJoin: true,
+    canPublish: true,
+    canSubscribe: true,
+  });
 
   return at.toJwt();
 };
