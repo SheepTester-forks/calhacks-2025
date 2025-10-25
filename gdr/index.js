@@ -21,9 +21,10 @@ app.get('/', (req, res) => {
   const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
   https.get(downloadUrl, (gdriveResponse) => {
+	  console.log(gdriveResponse)
     // Forward headers from Google Drive to the client
-    res.setHeader('Content-disposition', gdriveResponse.headers['content-disposition']);
-    res.setHeader('Content-type', gdriveResponse.headers['content-type']);
+    res.setHeader('Content-disposition', gdriveResponse.headers['content-disposition']??'');
+    res.setHeader('Content-type', gdriveResponse.headers['content-type']??''	);
     gdriveResponse.pipe(res);
   }).on('error', (e) => {
     console.error(e);
