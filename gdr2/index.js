@@ -2,6 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { JSDOM } from 'jsdom';
+import cliProgress from 'cli-progress';
 
 const GDR_URL =
   'https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk';
@@ -22,7 +23,7 @@ async function getDownloadUrlAndCookies() {
   });
 
   const cookies = initialResponse.headers['set-cookie'];
-  fs.writeFileSync('debug_initial.html', initialResponse.data);
+  // fs.writeFileSync('debug_initial.html', initialResponse.data);
 
   // The initial page contains a script with viewerData, which has the usercontent URL.
   let intermediateUrlMatch = initialResponse.data.match(
@@ -53,7 +54,7 @@ async function getDownloadUrlAndCookies() {
   const newCookies = confirmResponse.headers['set-cookie']
     ? cookies.concat(confirmResponse.headers['set-cookie'])
     : cookies;
-  fs.writeFileSync('debug_confirm.html', confirmResponse.data);
+  // fs.writeFileSync('debug_confirm.html', confirmResponse.data);
 
   const dom = new JSDOM(confirmResponse.data);
   // The form for large files.
@@ -81,33 +82,48 @@ async function getDownloadUrlAndCookies() {
 }
 
 async function getFileSize(url, cookies) {
-  console.log('Fetching file size with partial GET...');
+  console.log('Fetching file size with a partial GET request...');
   const response = await axios.get(url, {
     headers: {
       Cookie: cookies.join('; '),
       Range: 'bytes=0-0',
       'User-Agent':
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      Range: 'bytes=0-0', // Request only the first byte
     },
     maxRedirects: 5,
+    responseType: 'stream',
   });
+
+  // We don't need the body, so destroy the stream immediately.
+  response.data.destroy();
 
   const contentRange = response.headers['content-range'];
   if (!contentRange) {
-    throw new Error('Content-Range header not found in response.');
+    const contentLength = response.headers['content-length'];
+    if (contentLength && parseInt(contentLength, 10) > 0) {
+      console.log('File size from content-length:', contentLength);
+      return parseInt(contentLength, 10);
+    }
+    throw new Error(
+      'Could not determine file size. Neither content-range nor content-length is available.'
+    );
   }
 
   const sizeMatch = contentRange.match(/\/(\d+)/);
   if (!sizeMatch || !sizeMatch[1]) {
-    throw new Error(`Could not parse file size from Content-Range: ${contentRange}`);
+    throw new Error(
+      `Could not parse file size from content-range: ${contentRange}`
+    );
   }
 
-  const contentLength = parseInt(sizeMatch[1], 10);
-  if (contentLength <= 0) {
-    throw new Error(`Invalid content-length received: ${contentLength}`);
+  const fileSize = parseInt(sizeMatch[1], 10);
+  if (fileSize <= 0) {
+    throw new Error(`Invalid file size received from content-range: ${fileSize}`);
   }
-  console.log('File size:', contentLength);
-  return contentLength;
+
+  console.log('File size:', fileSize);
+  return fileSize;
 }
 
 async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
@@ -156,45 +172,49 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
   const writer = fs.createWriteStream(chunkFilePath);
   const stream = response.data;
 
+  const progressBar = new cliProgress.SingleBar(
+    {
+      format:
+        'Chunk {chunkIndex}/{totalChunks} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} bytes | Speed: {speed} | Packet Size: {packetSize} bytes | Last Packet: {lastPacket}ms ago',
+    },
+    cliProgress.Presets.shades_classic
+  );
+
+  const chunkTotal = end - start + 1;
+  progressBar.start(chunkTotal, 0, {
+    chunkIndex: chunkIndex,
+    totalChunks: totalChunks - 1,
+    speed: 'N/A',
+    packetSize: 'N/A',
+    lastPacket: 'N/A',
+  });
+
+  let downloaded = 0;
+  let lastPacketTime = Date.now();
+  let lastPacketSize = 0;
+  let downloadSpeed = 0;
+  let startTime = Date.now();
+
   return new Promise((resolve, reject) => {
-    let timeout;
-    let isStalled = false;
-    let stallStartTime;
-
-    const startTimeout = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        console.log(
-          `[Chunk ${chunkIndex}] No data received for 10 seconds. Download may be stalled.`
-        );
-        isStalled = true;
-        stallStartTime = Date.now();
-      }, 10000);
-    };
-
     stream.on('data', (chunk) => {
-      if (isStalled) {
-        const stallDuration = (Date.now() - stallStartTime) / 1000; // in seconds
-        const bytesReceived = chunk.length;
-        const mbps =
-          stallDuration > 0
-            ? (bytesReceived * 8) / (stallDuration * 1000000)
-            : 0;
+      const now = Date.now();
+      const timeSinceLastPacket = now - lastPacketTime;
+      lastPacketTime = now;
+      lastPacketSize = chunk.length;
+      downloaded += chunk.length;
 
-        console.log(
-          `[Chunk ${chunkIndex}] Data received. Download has resumed. Stall lasted ${stallDuration.toFixed(
-            2
-          )}s. Received ${bytesReceived} bytes (average rate over stall: ${mbps.toFixed(
-            2
-          )} Mbps).`
-        );
-        isStalled = false;
-      }
-      startTimeout();
+      const elapsedTime = (now - startTime) / 1000; // in seconds
+      downloadSpeed =
+        elapsedTime > 0 ? (downloaded / 1024 / elapsedTime).toFixed(2) : 0; // KB/s
+
+      progressBar.update(downloaded, {
+        speed: `${downloadSpeed} KB/s`,
+        packetSize: lastPacketSize,
+        lastPacket: timeSinceLastPacket,
+      });
     });
 
     stream.pipe(writer);
-    startTimeout();
 
     writer.on('finish', () => {
       clearTimeout(timeout);
@@ -234,11 +254,12 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
       );
       console.log(`  ETR: ${formatEtr(etrInSeconds)}`);
 
+      progressBar.stop();
       resolve();
     });
 
     const onError = (err) => {
-      clearTimeout(timeout);
+      progressBar.stop();
       reject(err);
     };
 
