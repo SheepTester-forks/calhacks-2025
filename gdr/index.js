@@ -21,11 +21,42 @@ app.get('/', (req, res) => {
   const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
   https.get(downloadUrl, (gdriveResponse) => {
-	  console.log(gdriveResponse)
-    // Forward headers from Google Drive to the client
-    res.setHeader('Content-disposition', gdriveResponse.headers['content-disposition']??'');
-    res.setHeader('Content-type', gdriveResponse.headers['content-type']??''	);
-    gdriveResponse.pipe(res);
+    if (gdriveResponse.headers['content-type'] && gdriveResponse.headers['content-type'].includes('text/html')) {
+      let body = '';
+      gdriveResponse.on('data', (chunk) => {
+        body += chunk;
+      });
+      gdriveResponse.on('end', () => {
+        const confirmMatch = body.match(/confirm=([^;&]+)/);
+        if (confirmMatch && confirmMatch[1]) {
+          const confirmToken = confirmMatch[1];
+          const downloadUrlWithConfirm = `${downloadUrl}&confirm=${confirmToken}`;
+          const cookies = gdriveResponse.headers['set-cookie'];
+
+          const options = {
+            headers: {
+              'Cookie': cookies.join('; ')
+            }
+          };
+
+          https.get(downloadUrlWithConfirm, options, (confirmedGdriveResponse) => {
+            res.setHeader('Content-disposition', confirmedGdriveResponse.headers['content-disposition']??'');
+            res.setHeader('Content-type', confirmedGdriveResponse.headers['content-type']??'');
+            confirmedGdriveResponse.pipe(res);
+          }).on('error', (e) => {
+            console.error(e);
+            res.status(500).send('Error downloading file from Google Drive after confirmation.');
+          });
+        } else {
+          res.status(500).send('Could not find confirmation token for large file download.');
+        }
+      });
+    } else {
+      // Forward headers from Google Drive to the client
+      res.setHeader('Content-disposition', gdriveResponse.headers['content-disposition']??'');
+      res.setHeader('Content-type', gdriveResponse.headers['content-type']??'');
+      gdriveResponse.pipe(res);
+    }
   }).on('error', (e) => {
     console.error(e);
     res.status(500).send('Error downloading file from Google Drive.');
