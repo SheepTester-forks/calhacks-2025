@@ -1,5 +1,8 @@
 # Google Drive Forwarder
 
+> [!WARNING]
+> this has been superceded by `gdr2/`
+
 This is a simple Node.js web server that forwards Google Drive download links. It's designed to help download large files from Google Drive on a machine with limited network access, by using another machine as a proxy.
 
 ## Installation
