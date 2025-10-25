@@ -40,23 +40,3 @@ This project merges the analytical power of ad intelligence with the dynamic, un
 5.  **Voice Integration (Stretch Goal):** Use LiveKit and Fish Audio to allow users to talk to the AI agents and hear their responses.
 
 ---
-
-## Targeted Hackathon Prizes
-
-This project is designed to compete for a wide range of hackathon prizes, including:
-
-*   **Core:**
-    *   Janitor AI - Build a Multiplayer AI Chat Experience
-    *   AppLovin - Ad Intelligence Challenge
-    *   Claude - Best Use of Claude
-    *   Fetch.ai - Best Use of Fetch.ai / Agentverse
-*   **High-Impact:**
-    *   Reka - Best Use of Reka
-    *   Creao - Best Designed Web App / Smartest AI agent
-    *   LiveKit - Most Creative / Complex Project
-    *   Fish Audio - Best Use of Fish Audio
-*   **Supporting:**
-    *   Warp - Data Visualization Agent
-    *   Wordware - Most Wacky Hack
-    *   Best Start-up Idea
-    *   Annapurna - Best Use of Annapurna
