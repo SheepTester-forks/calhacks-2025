@@ -153,119 +153,136 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
   const start = chunkIndex * CHUNK_SIZE;
   const end = Math.min(start + CHUNK_SIZE - 1, fileSize - 1);
 
-  console.log(
-    `Downloading chunk ${chunkIndex}/${totalChunks - 1} (bytes ${start}-${end})...`
-  );
-
-  const startTime2		 = Date.now();
-
-  const response = await axios.get(url, {
-    headers: {
-      Cookie: cookies.join('; '),
-      Range: `bytes=${start}-${end}`,
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    },
-    responseType: 'stream',
-  });
-
-  const writer = fs.createWriteStream(chunkFilePath);
-  const stream = response.data;
-
-  const progressBar = new cliProgress.SingleBar(
-    {
-      format:
-        'Chunk {chunkIndex}/{totalChunks} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} bytes | Speed: {speed} | Packet Size: {packetSize} bytes | Last Packet: {lastPacket}ms ago',
-    },
-    cliProgress.Presets.shades_classic
-  );
-
-  const chunkTotal = end - start + 1;
-  progressBar.start(chunkTotal, 0, {
-    chunkIndex: chunkIndex,
-    totalChunks: totalChunks - 1,
-    speed: 'N/A',
-    packetSize: 'N/A',
-    lastPacket: 'N/A',
-  });
-
-  let downloaded = 0;
-  let lastPacketTime = Date.now();
-  let lastPacketSize = 0;
-  let downloadSpeed = 0;
-  let startTime = Date.now();
-
-  return new Promise((resolve, reject) => {
-    stream.on('data', (chunk) => {
-      const now = Date.now();
-      const timeSinceLastPacket = now - lastPacketTime;
-      lastPacketTime = now;
-      lastPacketSize = chunk.length;
-      downloaded += chunk.length;
-
-      const elapsedTime = (now - startTime) / 1000; // in seconds
-      downloadSpeed =
-        elapsedTime > 0 ? (downloaded / 1024 / elapsedTime).toFixed(2) : 0; // KB/s
-
-      progressBar.update(downloaded, {
-        speed: `${downloadSpeed} KB/s`,
-        packetSize: lastPacketSize,
-        lastPacket: timeSinceLastPacket,
-      });
-    });
-
-    stream.pipe(writer);
-
-    writer.on('finish', () => {
-      //clearTimeout(timeout);
-      const endTime = Date.now();
-      const durationInSeconds = (endTime - startTime2) / 1000;
-      const chunkSizeInBytes = end - start + 1;
-      const speedInMbps = (chunkSizeInBytes * 8) / (durationInSeconds * 1000000);
-      const remainingChunks = totalChunks - (chunkIndex + 1);
-      const etrInSeconds = remainingChunks * durationInSeconds;
-
-      const formatEtr = (seconds) => {
-        const h = Math.floor(seconds / 3600)
-          .toString()
-          .padStart(2, '0');
-        const m = Math.floor((seconds % 3600) / 60)
-          .toString()
-          .padStart(2, '0');
-        const s = Math.floor(seconds % 60)
-          .toString()
-          .padStart(2, '0');
-        return `${h}:${m}:${s}`;
-      };
-
-      const getSpeedDescription = (mbps) => {
-        if (mbps < 1) return '1/5 "abysmally slow"';
-        if (mbps < 10) return '2/5 "very slow"';
-        if (mbps < 50) return '3/5 "moderate"';
-        if (mbps < 100) return '4/5 "fast"';
-        return '5/5 "very fast"';
-      };
-
-      console.log(`  Chunk downloaded in ${durationInSeconds.toFixed(2)}s`);
+  while (true) {
+    try {
       console.log(
-        `  Speed: ${speedInMbps.toFixed(
-          2
-        )} Mbps (${getSpeedDescription(speedInMbps)})`
+        `Downloading chunk ${chunkIndex}/${
+          totalChunks - 1
+        } (bytes ${start}-${end})...`
       );
-      console.log(`  ETR: ${formatEtr(etrInSeconds)}`);
 
-      progressBar.stop();
-      resolve();
-    });
+      const startTime2 = Date.now();
 
-    const onError = (err) => {
-      progressBar.stop();
-      reject(err);
-    };
+      const response = await axios.get(url, {
+        headers: {
+          Cookie: cookies.join('; '),
+          Range: `bytes=${start}-${end}`,
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        },
+        responseType: 'stream',
+      });
 
-    writer.on('error', onError);
-    stream.on('error', onError);
-  });
+      const writer = fs.createWriteStream(chunkFilePath);
+      const stream = response.data;
+
+      const progressBar = new cliProgress.SingleBar(
+        {
+          format:
+            'Chunk {chunkIndex}/{totalChunks} [{bar}] {percentage}% | ETA: {eta}s | {value}/{total} bytes | Speed: {speed} | Packet Size: {packetSize} bytes | Last Packet: {lastPacket}ms ago',
+        },
+        cliProgress.Presets.shades_classic
+      );
+
+      const chunkTotal = end - start + 1;
+      progressBar.start(chunkTotal, 0, {
+        chunkIndex: chunkIndex,
+        totalChunks: totalChunks - 1,
+        speed: 'N/A',
+        packetSize: 'N/A',
+        lastPacket: 'N/A',
+      });
+
+      let downloaded = 0;
+      let lastPacketTime = Date.now();
+      let lastPacketSize = 0;
+      let downloadSpeed = 0;
+      let startTime = Date.now();
+
+      await new Promise((resolve, reject) => {
+        stream.on('data', (chunk) => {
+          const now = Date.now();
+          const timeSinceLastPacket = now - lastPacketTime;
+          lastPacketTime = now;
+          lastPacketSize = chunk.length;
+          downloaded += chunk.length;
+
+          const elapsedTime = (now - startTime) / 1000; // in seconds
+          downloadSpeed =
+            elapsedTime > 0
+              ? (downloaded / 1024 / elapsedTime).toFixed(2)
+              : 0; // KB/s
+
+          progressBar.update(downloaded, {
+            speed: `${downloadSpeed} KB/s`,
+            packetSize: lastPacketSize,
+            lastPacket: timeSinceLastPacket,
+          });
+        });
+
+        stream.pipe(writer);
+
+        writer.on('finish', () => {
+          //clearTimeout(timeout);
+          const endTime = Date.now();
+          const durationInSeconds = (endTime - startTime2) / 1000;
+          const chunkSizeInBytes = end - start + 1;
+          const speedInMbps =
+            (chunkSizeInBytes * 8) / (durationInSeconds * 1000000);
+          const remainingChunks = totalChunks - (chunkIndex + 1);
+          const etrInSeconds = remainingChunks * durationInSeconds;
+
+          const formatEtr = (seconds) => {
+            const h = Math.floor(seconds / 3600)
+              .toString()
+              .padStart(2, '0');
+            const m = Math.floor((seconds % 3600) / 60)
+              .toString()
+              .padStart(2, '0');
+            const s = Math.floor(seconds % 60)
+              .toString()
+              .padStart(2, '0');
+            return `${h}:${m}:${s}`;
+          };
+
+          const getSpeedDescription = (mbps) => {
+            if (mbps < 1) return '1/5 "abysmally slow"';
+            if (mbps < 10) return '2/5 "very slow"';
+            if (mbps < 50) return '3/5 "moderate"';
+            if (mbps < 100) return '4/5 "fast"';
+            return '5/5 "very fast"';
+          };
+
+          console.log(`  Chunk downloaded in ${durationInSeconds.toFixed(2)}s`);
+          console.log(
+            `  Speed: ${speedInMbps.toFixed(
+              2
+            )} Mbps (${getSpeedDescription(speedInMbps)})`
+          );
+          console.log(`  ETR: ${formatEtr(etrInSeconds)}`);
+
+          progressBar.stop();
+          resolve();
+        });
+
+        const onError = (err) => {
+          progressBar.stop();
+          reject(err);
+        };
+
+        writer.on('error', onError);
+        stream.on('error', onError);
+      });
+
+      // If we reach here, the download was successful
+      break;
+    } catch (error) {
+      console.error(
+        `\nAn error occurred while downloading chunk ${chunkIndex}: ${error.message}. Retrying in 5 seconds...`
+      );
+      await new Promise((res) => setTimeout(res, 5000));
+    }
+  }
 }
 
 async function main() {
