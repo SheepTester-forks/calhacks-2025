@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "tip: your working directory should be in gdr2/"
+
 # Test script for gdr2
 
 # Clean up previous test runs
