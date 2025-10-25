@@ -32,10 +32,10 @@ const UploadPage = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">Upload Your Ad</h1>
+      <h1 className="mb-4 text-3xl font-bold">Upload Your Ad</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="ad-file" className="block text-lg font-medium mb-2">
+          <label htmlFor="ad-file" className="mb-2 block text-lg font-medium">
             Select an image or video file:
           </label>
           <input
@@ -43,18 +43,13 @@ const UploadPage = () => {
             id="ad-file"
             accept="image/*,video/*"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-violet-50 file:text-violet-700
-              hover:file:bg-violet-100"
+            className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-violet-700 hover:file:bg-violet-100"
           />
         </div>
         <button
           type="submit"
           disabled={!file}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-400"
+          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 disabled:bg-gray-400"
         >
           Analyze Ad
         </button>

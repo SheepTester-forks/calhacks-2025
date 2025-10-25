@@ -23,7 +23,7 @@ const ChatWindow = ({ analysis }: ChatWindowProps) => {
   }, [analysis, isSimulating]);
 
   return (
-    <div className="bg-gray-100 p-4 rounded h-96 overflow-y-auto flex flex-col space-y-2">
+    <div className="flex h-96 flex-col space-y-2 overflow-y-auto rounded bg-gray-100 p-4">
       {messages.length === 0 && !isSimulating && (
         <p className="text-center text-gray-500">
           Waiting for analysis to start simulation...
@@ -33,7 +33,9 @@ const ChatWindow = ({ analysis }: ChatWindowProps) => {
         <ChatMessage key={i} message={msg} />
       ))}
       {isSimulating && messages.length < 3 && (
-         <div className="text-center text-gray-500">Simulation in progress...</div>
+        <div className="text-center text-gray-500">
+          Simulation in progress...
+        </div>
       )}
     </div>
   );

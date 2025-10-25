@@ -3,13 +3,11 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="text-center">
-      <h1 className="text-4xl font-bold mb-4">Welcome to AdSim</h1>
-      <p className="text-lg mb-8">
-        The AI-Powered Ad Simulator & Focus Group.
-      </p>
+      <h1 className="mb-4 text-4xl font-bold">Welcome to AdSim</h1>
+      <p className="mb-8 text-lg">The AI-Powered Ad Simulator & Focus Group.</p>
       <Link
         href="/upload"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
       >
         Get Started
       </Link>

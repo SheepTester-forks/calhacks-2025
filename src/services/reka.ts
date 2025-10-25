@@ -8,7 +8,9 @@ export interface AdAnalysis {
 
 const REKA_API_KEY = process.env.NEXT_PUBLIC_REKA_API_KEY;
 
-export const analyzeAd = async (adCreative: string): Promise<AdAnalysis | null> => {
+export const analyzeAd = async (
+  adCreative: string
+): Promise<AdAnalysis | null> => {
   if (!REKA_API_KEY || REKA_API_KEY === 'invalid') {
     console.error('Reka API key is not configured or is invalid.');
     // Return mock data for the hackathon
@@ -22,28 +24,34 @@ export const analyzeAd = async (adCreative: string): Promise<AdAnalysis | null> 
     };
   }
 
-  // In a real application, you would make the API call to Reka here.
-  // For example:
-  // const response = await fetch('https://api.reka.ai/v1/analyze', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Authorization': `Bearer ${REKA_API_KEY}`,
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({ adCreative }),
-  // });
-  // if (!response.ok) {
-  //   throw new Error('Failed to analyze ad');
-  // }
-  // return response.json();
+  try {
+    const response = await fetch('https://api.reka.ai/v1/multimodal/analyze', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${REKA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        media_url: adCreative,
+        analysis_tasks: ['sentiment', 'tone', 'objects', 'demographic_prediction', 'summary'],
+      }),
+    });
 
-  // For now, we'll just return the mock data.
-  return {
-    sentiment: 'Positive',
-    tone: ['Upbeat', 'Inspirational'],
-    objects: ['Laptop', 'Coffee', 'Desk'],
-    demographic: 'Young Professionals (25-35)',
-    summary:
-      'This ad targets young professionals with an uplifting message about productivity and modern work life.',
-  };
+    if (!response.ok) {
+      console.error('Failed to analyze ad with Reka API:', response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+    return {
+        sentiment: data.sentiment,
+        tone: data.tone,
+        objects: data.objects,
+        demographic: data.demographic_prediction,
+        summary: data.summary,
+    };
+  } catch (error) {
+    console.error('Error calling Reka API:', error);
+    return null;
+  }
 };

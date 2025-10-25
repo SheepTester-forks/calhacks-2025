@@ -29,12 +29,16 @@ const AnalysisPage = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       <div>
-        <h2 className="text-2xl font-bold mb-4">Ad Creative</h2>
+        <h2 className="mb-4 text-2xl font-bold">Ad Creative</h2>
         {adCreative ? (
           adCreative.startsWith('data:image') ? (
-            <img src={adCreative} alt="Ad Creative" className="max-w-full rounded" />
+            <img
+              src={adCreative}
+              alt="Ad Creative"
+              className="max-w-full rounded"
+            />
           ) : (
             <video src={adCreative} controls className="max-w-full rounded" />
           )
@@ -44,17 +48,27 @@ const AnalysisPage = () => {
       </div>
       <div className="space-y-8">
         <div>
-          <h2 className="text-2xl font-bold mb-4">AI Analysis</h2>
-          <div className="bg-gray-100 p-4 rounded">
+          <h2 className="mb-4 text-2xl font-bold">AI Analysis</h2>
+          <div className="rounded bg-gray-100 p-4">
             {isLoading ? (
               <p>Analyzing...</p>
             ) : analysis ? (
               <div className="space-y-2">
-                <p><strong>Sentiment:</strong> {analysis.sentiment}</p>
-                <p><strong>Tone:</strong> {analysis.tone.join(', ')}</p>
-                <p><strong>Objects:</strong> {analysis.objects.join(', ')}</p>
-                <p><strong>Predicted Demographic:</strong> {analysis.demographic}</p>
-                <p><strong>Summary:</strong> {analysis.summary}</p>
+                <p>
+                  <strong>Sentiment:</strong> {analysis.sentiment}
+                </p>
+                <p>
+                  <strong>Tone:</strong> {analysis.tone.join(', ')}
+                </p>
+                <p>
+                  <strong>Objects:</strong> {analysis.objects.join(', ')}
+                </p>
+                <p>
+                  <strong>Predicted Demographic:</strong> {analysis.demographic}
+                </p>
+                <p>
+                  <strong>Summary:</strong> {analysis.summary}
+                </p>
               </div>
             ) : (
               <p>Could not analyze ad. Please check the console for errors.</p>
@@ -62,7 +76,7 @@ const AnalysisPage = () => {
           </div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-4">Audience Simulation</h2>
+          <h2 className="mb-4 text-2xl font-bold">Audience Simulation</h2>
           <ChatWindow analysis={analysis} />
         </div>
       </div>

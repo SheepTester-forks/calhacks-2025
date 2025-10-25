@@ -19,6 +19,15 @@ const personas: Persona[] = [
   { name: 'Data-Driven Dana', avatar: '/avatars/dana.png' },
 ];
 
+/**
+ * In a real application, this function would connect to a Janitor AI-powered
+ * backend service (likely via WebSocket) to manage the multi-agent chat.
+ * The backend would be responsible for orchestrating the AI personas,
+ * managing the conversation flow, and broadcasting messages to the client.
+ *
+ * For this hackathon, we simulate this process by iterating through the
+ * personas and generating their responses sequentially using the Claude service.
+ */
 export const startChatSimulation = async (
   adAnalysis: AdAnalysis,
   onMessage: (turn: ChatTurn) => void
@@ -34,5 +43,27 @@ export const startChatSimulation = async (
     return;
   }
 
-  // In a real application, you would connect to the Janitor AI service here.
+  // To implement this for real, you would:
+  // 1. Establish a WebSocket connection to your Janitor AI backend.
+  // 2. Send the ad analysis to the backend to initialize the simulation.
+  // 3. Listen for incoming messages from the WebSocket.
+  // 4. When a message is received, call the `onMessage` callback to update the UI.
+  //
+  // Example:
+  // const socket = new WebSocket(`wss://your-janitor-ai-backend.com?apiKey=${JANITOR_API_KEY}`);
+  //
+  // socket.onopen = () => {
+  //   socket.send(JSON.stringify({ type: 'start_simulation', payload: adAnalysis }));
+  // };
+  //
+  // socket.onmessage = (event) => {
+  //   const message = JSON.parse(event.data);
+  //   if (message.type === 'chat_turn') {
+  //     onMessage(message.payload);
+  //   }
+  // };
+  //
+  // socket.onerror = (error) => {
+  //   console.error('WebSocket error:', error);
+  // };
 };
