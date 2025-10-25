@@ -1,0 +1,14 @@
+{
+  "name": "gdr-forwarder",
+  "version": "1.0.0",
+  "description": "A Node.js web server to forward Google Drive downloads.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "author": "",
+  "license": "ISC"
+}
