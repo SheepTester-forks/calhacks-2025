@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
   const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
   https.get(downloadUrl, (gdriveResponse) => {
-    if (gdriveResponse.headers['content-type'] && gdriveResponse.headers['content-type'].includes('text/html')) {
+    if (gdriveResponse.headers['content-type'] && gdriveResponse.headers['content-type'].includes('text/html')) {console.log('scanmsg')
       let body = '';
       gdriveResponse.on('data', (chunk) => {
         body += chunk;
@@ -40,6 +40,7 @@ app.get('/', (req, res) => {
           };
 
           https.get(downloadUrlWithConfirm, options, (confirmedGdriveResponse) => {
+		  console.log(confirmedGdriveResponse,'aftercsnamesg')
             res.setHeader('Content-disposition', confirmedGdriveResponse.headers['content-disposition']??'');
             res.setHeader('Content-type', confirmedGdriveResponse.headers['content-type']??'');
             confirmedGdriveResponse.pipe(res);
@@ -56,6 +57,7 @@ app.get('/', (req, res) => {
       res.setHeader('Content-disposition', gdriveResponse.headers['content-disposition']??'');
       res.setHeader('Content-type', gdriveResponse.headers['content-type']??'');
       gdriveResponse.pipe(res);
+	    console.log(gdriveResponse,'noscanmsg')
     }
   }).on('error', (e) => {
     console.error(e);
