@@ -157,7 +157,7 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
     `Downloading chunk ${chunkIndex}/${totalChunks - 1} (bytes ${start}-${end})...`
   );
 
-  const startTime = Date.now();
+  const startTime2		 = Date.now();
 
   const response = await axios.get(url, {
     headers: {
@@ -217,9 +217,9 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
     stream.pipe(writer);
 
     writer.on('finish', () => {
-      clearTimeout(timeout);
+      //clearTimeout(timeout);
       const endTime = Date.now();
-      const durationInSeconds = (endTime - startTime) / 1000;
+      const durationInSeconds = (endTime - startTime2) / 1000;
       const chunkSizeInBytes = end - start + 1;
       const speedInMbps = (chunkSizeInBytes * 8) / (durationInSeconds * 1000000);
       const remainingChunks = totalChunks - (chunkIndex + 1);
