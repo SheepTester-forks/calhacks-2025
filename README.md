@@ -40,3 +40,5 @@ This project merges the analytical power of ad intelligence with the dynamic, un
 5.  **Voice Integration (Stretch Goal):** Use LiveKit and Fish Audio to allow users to talk to the AI agents and hear their responses.
 
 ---
+
+https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk
