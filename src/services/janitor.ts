@@ -1,4 +1,3 @@
-import { generatePersonaResponse } from './claude';
 import { AdAnalysis } from './reka';
 
 const JANITOR_API_KEY = process.env.NEXT_PUBLIC_JANITOR_API_KEY;
@@ -36,9 +35,26 @@ export const startChatSimulation = async (
     console.error('Janitor AI API key is not configured or is invalid.');
     // Simulate the chat for the hackathon
     for (const persona of personas) {
-      const text = await generatePersonaResponse(persona.name, adAnalysis);
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay
-      onMessage({ persona, text });
+      try {
+        const response = await fetch('/api/persona', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ personaName: persona.name, adAnalysis }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to generate persona response');
+        }
+
+        const { response: text } = await response.json();
+        await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate delay
+        onMessage({ persona, text });
+      } catch (error) {
+        console.error(`Failed to get response for ${persona.name}:`, error);
+        // Continue with the next persona
+      }
     }
     return;
   }
