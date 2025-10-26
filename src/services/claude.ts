@@ -33,11 +33,13 @@ export const analyzeAdWithClaude = async (
   }`;
 
   try {
+    console.log(prompt);
     const response = await anthropic.messages.create({
       model: 'claude-3-haiku-20240307',
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     });
+    console.log(response);
     const firstContentBlock = response.content[0];
     if (firstContentBlock && firstContentBlock.type === 'text') {
       return JSON.parse(firstContentBlock.text) as AdAnalysis;

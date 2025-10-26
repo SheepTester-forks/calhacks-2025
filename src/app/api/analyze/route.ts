@@ -22,7 +22,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('wow');
     const analysis: AdAnalysis | null = await analyzeAdWithClaude(creative);
+    console.log(analysis);
     if (!analysis) {
       return NextResponse.json(
         { error: 'Failed to analyze ad' },
@@ -30,9 +32,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('hello');
     const chatPromises = personas.map(async (persona) => {
       const text = await generatePersonaResponse(persona.name, analysis);
+      console.log(text);
       const audioUrl = await textToSpeech(text);
+      console.log(audioUrl);
       return { persona, text, audioUrl };
     });
 
