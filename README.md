@@ -1,4 +1,4 @@
-[![beg jules](Docs/beg_jules.svg)](https://github.com/SheepTester-forks/calhacks-2025/issues/new?template=jules_issue_template.md)
+[![beg jules](docs/beg_jules.svg)](https://github.com/SheepTester-forks/calhacks-2025/issues/new?template=jules_issue_template.md)
 
 [devpost](devpost.com/software/what-s-the-best-way-to-tell-people-to-turn-off-their-hotspot)
 
