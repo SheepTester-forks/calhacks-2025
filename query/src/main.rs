@@ -14,6 +14,8 @@ struct Args {
 
 #[derive(Debug, Deserialize)]
 struct Event {
+    /// Minutes since Unix epoch, though in the CSV it's represented in
+    /// milliseconds
     #[serde(rename = "ts")]
     timestamp: u64,
     #[serde(rename = "type")]

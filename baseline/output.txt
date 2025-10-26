@@ -1,0 +1,35 @@
+🟩 Loading 49 CSV parts from data ...
+🟩 Loading complete
+
+🟦 Query 1:
+{'select': ['day', {'SUM': 'bid_price'}], 'from': 'events', 'where': [{'col': 'type', 'op': 'eq', 'val': 'impression'}], 'group_by': ['day']}
+
+✅ Rows: 366 | Time: 5.366s
+
+🟦 Query 2:
+{'select': ['publisher_id', {'SUM': 'bid_price'}], 'from': 'events', 'where': [{'col': 'type', 'op': 'eq', 'val': 'impression'}, {'col': 'country', 'op': 'eq', 'val': 'JP'}, {'col': 'day', 'op': 'between', 'val': ['2024-10-20', '2024-10-23']}], 'group_by': ['publisher_id']}
+
+✅ Rows: 1114 | Time: 4.558s
+
+🟦 Query 3:
+{'select': ['country', {'AVG': 'total_price'}], 'from': 'events', 'where': [{'col': 'type', 'op': 'eq', 'val': 'purchase'}], 'group_by': ['country'], 'order_by': [{'col': 'AVG(total_price)', 'dir': 'desc'}]}
+
+✅ Rows: 12 | Time: 3.917s
+
+🟦 Query 4:
+{'select': ['advertiser_id', 'type', {'COUNT': '*'}], 'from': 'events', 'group_by': ['advertiser_id', 'type'], 'order_by': [{'col': 'COUNT(*)', 'dir': 'desc'}]}
+
+✅ Rows: 6616 | Time: 4.373s
+
+🟦 Query 5:
+{'select': ['minute', {'SUM': 'bid_price'}], 'from': 'events', 'where': [{'col': 'type', 'op': 'eq', 'val': 'impression'}, {'col': 'day', 'op': 'eq', 'val': '2024-06-01'}], 'group_by': ['minute'], 'order_by': [{'col': 'minute', 'dir': 'asc'}]}
+
+✅ Rows: 1440 | Time: 5.247s
+
+Summary:
+Q1: 5.366s (366 rows)
+Q2: 4.558s (1114 rows)
+Q3: 3.917s (12 rows)
+Q4: 4.373s (6616 rows)
+Q5: 5.247s (1440 rows)
+Total time: 23.461s
