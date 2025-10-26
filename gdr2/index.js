@@ -223,6 +223,21 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
         stream.pipe(writer);
 
         writer.on('finish', () => {
+          progressBar.stop();
+
+          const downloadedSize = fs.statSync(chunkFilePath).size;
+          const isLastChunk = chunkIndex === totalChunks - 1;
+
+          if (!isLastChunk && downloadedSize < CHUNK_SIZE) {
+            let errorMessage = `Chunk ${chunkIndex} is smaller than expected (${downloadedSize} vs ${CHUNK_SIZE} bytes).`;
+            if (downloadedSize < 5000 && downloadedSize > 0) {
+              const errorContent = fs.readFileSync(chunkFilePath, 'utf-8');
+              errorMessage += `\nResponse content:\n---\n${errorContent}\n---`;
+            }
+            reject(new Error(errorMessage));
+            return;
+          }
+
           //clearTimeout(timeout);
           const endTime = Date.now();
           const durationInSeconds = (endTime - startTime2) / 1000;
@@ -261,7 +276,6 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
           );
           console.log(`  ETR: ${formatEtr(etrInSeconds)}`);
 
-          progressBar.stop();
           resolve();
         });
 
