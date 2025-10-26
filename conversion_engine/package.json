@@ -1,0 +1,21 @@
+{
+  "name": "conversion-engine",
+  "version": "1.0.0",
+  "description": "A GitHub workflow application that uses AI to suggest improvements to code and documentation.",
+  "main": "analyze.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "workflow",
+    "ai",
+    "claude",
+    "conversion"
+  ],
+  "author": "Jules",
+  "license": "ISC",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.8"
+  }
+}
