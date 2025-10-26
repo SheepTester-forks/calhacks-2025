@@ -2,6 +2,9 @@
 
 [devpost](devpost.com/software/what-s-the-best-way-to-tell-people-to-turn-off-their-hotspot)
 
+> [!NOTE]
+> The project mentioned in the Devpost lives in `gdr2/`. all the other files are other hackathon project attempts that didnt get very far because i was busy downloading 6–7 GB
+
 # AdSim: The AI-Powered Ad Simulator & Focus Group
 
 **AdSim** is a revolutionary platform that allows marketing professionals to test and analyze their creative advertisements against a simulated audience of diverse AI personas.
