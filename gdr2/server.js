@@ -19,7 +19,7 @@ function startServer() {
     }
 
     res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', 'attachment; filename="downloaded-file"');
+    res.setHeader('Content-Disposition', 'attachment; filename="data.zip"');
 
     let currentChunkIndex = 0;
 
