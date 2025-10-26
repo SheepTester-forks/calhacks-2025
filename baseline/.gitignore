@@ -1,2 +1,6 @@
 # it seems to already be ignored but i dont know where
-.venv
+.venv/
+
+__pycache__/
+out/
+tmp/

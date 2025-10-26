@@ -1,5 +1,7 @@
 struct Event {
-    timestamp: u64,
+    /// Minutes since Unix epoch, though in the CSV it's represented in
+    /// milliseconds
+    timestamp: u32,
     event_type: EventType,
     /// 16 bytes -> 2 u64s (right?)
     auction_id: [u64; 2],
