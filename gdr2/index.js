@@ -280,7 +280,7 @@ async function downloadChunk(url, cookies, chunkIndex, totalChunks, fileSize) {
       console.error(
         `\nAn error occurred while downloading chunk ${chunkIndex}: ${error.message}. Retrying in 5 seconds...`
       );
-      await new Promise((res) => setTimeout(res, 5000));
+      await new Promise((res) => setTimeout(res, 500));
     }
   }
 }
