@@ -42,3 +42,7 @@ This project merges the analytical power of ad intelligence with the dynamic, un
 ---
 
 https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk
+
+```sh
+unzip -d data data.zip
+```
