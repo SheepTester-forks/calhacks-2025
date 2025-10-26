@@ -1,16 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { analyzeAd } from '@/services/reka';
+import {
+  analyzeAdWithClaude,
+  generatePersonaResponse,
+} from '@/services/claude';
+import { textToSpeech } from '@/services/fish';
+import { AdAnalysis, ChatTurn, Persona } from '@/lib/types';
+
+const personas: Persona[] = [
+  { name: 'Enthusiastic Emily', avatar: '/avatars/emily.png' },
+  { name: 'Skeptical Steve', avatar: '/avatars/steve.png' },
+  { name: 'Data-Driven Dana', avatar: '/avatars/dana.png' },
+];
 
 export async function POST(request: NextRequest) {
   try {
     const { creative } = await request.json();
     if (!creative) {
-      return NextResponse.json({ error: 'Ad creative is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Ad creative is required' },
+        { status: 400 }
+      );
     }
-    const analysis = await analyzeAd(creative);
-    return NextResponse.json(analysis);
+
+    const analysis: AdAnalysis | null = await analyzeAdWithClaude(creative);
+    if (!analysis) {
+      return NextResponse.json(
+        { error: 'Failed to analyze ad' },
+        { status: 500 }
+      );
+    }
+
+    const chatPromises = personas.map(async (persona) => {
+      const text = await generatePersonaResponse(persona.name, analysis);
+      const audioUrl = await textToSpeech(text);
+      return { persona, text, audioUrl };
+    });
+
+    const chat: ChatTurn[] = await Promise.all(chatPromises);
+
+    return NextResponse.json({ analysis, chat });
   } catch (error) {
     console.error('Error in analyze API route:', error);
-    return NextResponse.json({ error: 'Failed to analyze ad' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An unexpected error occurred' },
+      { status: 500 }
+    );
   }
 }

@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { AdAnalysis } from '@/services/reka';
+import { useState, useEffect } from 'react';
+import { AdAnalysis, ChatTurn } from '@/lib/types';
 import ChatWindow from '@/components/ChatWindow';
 
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [adCreativeUrl, setAdCreativeUrl] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<AdAnalysis | null>(null);
+  const [chat, setChat] = useState<ChatTurn[] | null>(null);
+  const [displayedChat, setDisplayedChat] = useState<ChatTurn[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +26,8 @@ const UploadPage = () => {
     if (file) {
       setIsLoading(true);
       setAnalysis(null);
+      setChat(null);
+      setDisplayedChat([]);
 
       const reader = new FileReader();
       reader.onload = async (event) => {
@@ -42,11 +46,10 @@ const UploadPage = () => {
             }
 
             const result = await response.json();
-            setAnalysis(result);
+            setAnalysis(result.analysis);
+            setChat(result.chat);
           } catch (error) {
             console.error('Failed to analyze ad:', error);
-            // Optionally, set an error state to show in the UI
-          } finally {
             setIsLoading(false);
           }
         }
@@ -54,6 +57,29 @@ const UploadPage = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    console.log("Chat state updated:", chat);
+    if (chat && chat.length > 0) {
+      let currentIndex = 0;
+      const interval = setInterval(() => {
+        if (currentIndex < chat.length) {
+          console.log("Displaying chat message:", chat[currentIndex]);
+          setDisplayedChat((prev) => [...prev, chat[currentIndex]]);
+          currentIndex++;
+        } else {
+          setIsLoading(false);
+          clearInterval(interval);
+        }
+      }, 2000); // 2-second delay
+
+      return () => clearInterval(interval);
+    } else if (analysis) {
+      // If there's analysis but no chat, stop loading
+      console.log("Analysis updated, but no chat. Stopping loading.");
+      setIsLoading(false);
+    }
+  }, [chat, analysis]);
 
   return (
     <div className="container mx-auto p-4">
@@ -83,55 +109,59 @@ const UploadPage = () => {
       </div>
 
       {(isLoading || analysis || adCreativeUrl) && (
-         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-         <div>
-           <h2 className="mb-4 text-2xl font-bold">Ad Creative</h2>
-           {adCreativeUrl &&
-             (file?.type.startsWith('image') ? (
-               <img
-                 src={adCreativeUrl}
-                 alt="Ad Creative"
-                 className="max-w-full rounded"
-               />
-             ) : (
-               <video src={adCreativeUrl} controls className="max-w-full rounded" />
-             ))}
-         </div>
-         <div className="space-y-8">
-           <div>
-             <h2 className="mb-4 text-2xl font-bold">AI Analysis</h2>
-             <div className="rounded bg-gray-100 p-4">
-               {isLoading ? (
-                 <p>Analyzing...</p>
-               ) : analysis ? (
-                 <div className="space-y-2">
-                   <p>
-                     <strong>Sentiment:</strong> {analysis.sentiment}
-                   </p>
-                   <p>
-                     <strong>Tone:</strong> {analysis.tone.join(', ')}
-                   </p>
-                   <p>
-                     <strong>Objects:</strong> {analysis.objects.join(', ')}
-                   </p>
-                   <p>
-                     <strong>Predicted Demographic:</strong> {analysis.demographic}
-                   </p>
-                   <p>
-                     <strong>Summary:</strong> {analysis.summary}
-                   </p>
-                 </div>
-               ) : (
-                 <p>Analysis will appear here.</p>
-               )}
-             </div>
-           </div>
-           <div>
-             <h2 className="mb-4 text-2xl font-bold">Audience Simulation</h2>
-             <ChatWindow analysis={analysis} />
-           </div>
-         </div>
-       </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <h2 className="mb-4 text-2xl font-bold">Ad Creative</h2>
+            {adCreativeUrl &&
+              (file?.type.startsWith('image') ? (
+                <img
+                  src={adCreativeUrl}
+                  alt="Ad Creative"
+                  className="max-w-full rounded"
+                />
+              ) : (
+                <video
+                  src={adCreativeUrl}
+                  controls
+                  className="max-w-full rounded"
+                />
+              ))}
+          </div>
+          <div className="space-y-8">
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">AI Analysis</h2>
+              <div className="rounded bg-gray-100 p-4">
+                {isLoading && !analysis ? (
+                  <p>Analyzing...</p>
+                ) : analysis ? (
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Sentiment:</strong> {analysis.sentiment}
+                    </p>
+                    <p>
+                      <strong>Main Themes:</strong>{' '}
+                      {analysis.main_themes.join(', ')}
+                    </p>
+                    <p>
+                      <strong>Target Demographic:</strong>{' '}
+                      {analysis.target_demographic}
+                    </p>
+                    <p>
+                      <strong>Summary:</strong> {analysis.summary}
+                    </p>
+                  </div>
+                ) : (
+                  <p>Analysis will appear here.</p>
+                )}
+              </div>
+            </div>
+            <div>
+              <h2 className="mb-4 text-2xl font-bold">Audience Simulation</h2>
+              <ChatWindow chat={displayedChat} isSimulating={isLoading && !analysis} />
+              <pre>{JSON.stringify(chat, null, 2)}</pre>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

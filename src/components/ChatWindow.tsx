@@ -1,42 +1,27 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import ChatMessage, { Message } from './ChatMessage';
-import { startChatSimulation, ChatTurn } from '@/services/janitor';
-import { AdAnalysis } from '@/services/reka';
+import ChatMessage from './ChatMessage';
+import { ChatTurn } from '@/lib/types';
 
 interface ChatWindowProps {
-  analysis: AdAnalysis | null;
+  chat: ChatTurn[] | null;
+  isSimulating: boolean;
 }
 
-const ChatWindow = ({ analysis }: ChatWindowProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isSimulating, setIsSimulating] = useState(false);
-
-  useEffect(() => {
-    if (analysis && !isSimulating) {
-      setIsSimulating(true);
-      startChatSimulation(analysis, (turn: ChatTurn) => {
-        setMessages((prev) => [...prev, turn]);
-      });
-    }
-  }, [analysis, isSimulating]);
-
+const ChatWindow = ({ chat, isSimulating }: ChatWindowProps) => {
   return (
     <div className="flex h-96 flex-col space-y-2 overflow-y-auto rounded bg-gray-100 p-4">
-      {messages.length === 0 && !isSimulating && (
+      {isSimulating && (!chat || chat.length === 0) && (
+        <p className="text-center text-gray-500">
+          Simulation in progress...
+        </p>
+      )}
+      {!isSimulating && (!chat || chat.length === 0) && (
         <p className="text-center text-gray-500">
           Waiting for analysis to start simulation...
         </p>
       )}
-      {messages.map((msg, i) => (
-        <ChatMessage key={i} message={msg} />
+      {chat?.map((turn, i) => (
+        <ChatMessage key={i} message={turn} />
       ))}
-      {isSimulating && messages.length < 3 && (
-        <div className="text-center text-gray-500">
-          Simulation in progress...
-        </div>
-      )}
     </div>
   );
 };
