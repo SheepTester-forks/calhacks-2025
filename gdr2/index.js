@@ -4,8 +4,8 @@ import path from 'path';
 import { JSDOM } from 'jsdom';
 import cliProgress from 'cli-progress';
 
-const GDR_URL =
-  'https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk';
+const GDR_URL ='https://drive.google.com/file/d/1l3CAkpzFCgZA_d6NO_tLy1oecOdp2zQG/view?usp=drivesdk'
+  //'https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk';
 const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB
 const CHUNKS_DIR = 'chunks';
 
