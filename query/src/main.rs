@@ -18,11 +18,17 @@ struct Event {
     timestamp: u64,
     #[serde(rename = "type")]
     event_type: EventType,
+    /// 16 bytes -> 2 u64s (right?) -> now a string since it's a UUID
     auction_id: String,
+    /// 4 digits at most it seems
     advertiser_id: u16,
+    /// 4 digits at most it seems
     publisher_id: u16,
+    /// in ten-thousandths of a dollar. but f64 for compatibility
     bid_price: Option<f64>,
+    /// at most 6 digits
     user_id: u32,
+    /// in ten-thousandths of a dollar. but f64 for compatibility
     total_price: Option<f64>,
     country: Country,
 }
