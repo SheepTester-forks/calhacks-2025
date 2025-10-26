@@ -42,7 +42,11 @@ Please provide your reaction to the ad in a single, short paragraph, staying in 
       max_tokens: 100,
       messages: [{ role: 'user', content: prompt }],
     });
-    return response.content[0].text;
+    const firstContentBlock = response.content[0];
+    if (firstContentBlock && firstContentBlock.type === 'text') {
+      return firstContentBlock.text;
+    }
+    return 'I am unable to provide a response with the given content.';
   } catch (error) {
     console.error('Error calling Claude API:', error);
     return 'I am unable to provide a response at this time.';
