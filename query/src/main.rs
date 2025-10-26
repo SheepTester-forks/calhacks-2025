@@ -13,7 +13,7 @@ struct Event {
     user_id: u32,
     /// in ten-thousandths of a dollar
     total_price: u32,
-    country: u8,
+    country: Country,
 }
 
 enum EventType {
@@ -21,6 +21,21 @@ enum EventType {
     Impression,
     Click,
     Purchase,
+}
+
+enum Country {
+    US,
+    IN,
+    AU,
+    CA,
+    DE,
+    GB,
+    ES,
+    KR,
+    BR,
+    FR,
+    JP,
+    MX,
 }
 
 fn main() {
