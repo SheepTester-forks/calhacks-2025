@@ -77,6 +77,19 @@ This table stores the subset of fields you will be working with
 | **total\_price** | `float` | The total amount (in USD) of the purchase made by the user. | Only present on `purchase` events. May be `NULL` or 0 otherwise. |
 | **country** | `string` (ISO 3166-1 alpha-2 code) | The country in which the event occurred. | e.g., `US`, `JP`, `DE`, `IN`. Useful for geographic breakdowns. |
 
+Example rows:
+
+```csv
+ts,type,auction_id,advertiser_id,publisher_id,bid_price,user_id,total_price,country
+1717932870000,serve,7e20d44b-c9ea-43be-8a01-21783a8b3c13,148,863,,654572,,US
+1718295770000,serve,6a39fd70-cfdf-4e69-b4be-49339729511a,849,143,,839749,,US
+1718295773254,impression,6a39fd70-cfdf-4e69-b4be-49339729511a,849,143,6.4621,839749,,US
+1707075869881,click,b8eee04f-d4de-4897-bac8-00f0a00f2006,1486,180,,452984,,US
+1707077326627,purchase,b8eee04f-d4de-4897-bac8-00f0a00f2006,1486,180,,452984,104.35,US
+```
+
+The rows live in data/events_part_XXXXX.csv starting from 00000.
+
 ## Data Loading
 
 Sample data according to this schema has been generated in CSVs and compressed in `data.zip`. This is the entire data we will be working with during this exercise, for both the `prepare` and `run` phases, as well as during judging evaluation. Attached as well is `data-lite.zip` which is a 1 GB (after uncompressed) datasource which you may find helpful for prototyping or if hackathon internet speeds are poor. However, performance will ultimately be measured on the full 20 GB dataset (after uncompressed). Submissions will be evaluated against the exact same `data.zip` as provided above
