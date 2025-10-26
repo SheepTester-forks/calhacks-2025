@@ -7,12 +7,12 @@ struct Event {
     advertiser_id: u16,
     /// 4 digits at most it seems
     publisher_id: u16,
-    /// in ten-thousandths of a dollar
-    bid_price: u32,
+    /// in ten-thousandths of a dollar. but f64 for compatibility
+    bid_price: f64,
     /// at most 6 digits
     user_id: u32,
-    /// in ten-thousandths of a dollar
-    total_price: u32,
+    /// in ten-thousandths of a dollar. but f64 for compatibility
+    total_price: f64,
     country: Country,
 }
 
