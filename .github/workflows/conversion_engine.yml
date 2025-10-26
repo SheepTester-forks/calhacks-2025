@@ -1,0 +1,57 @@
+name: The Persuasion Engine
+
+on:
+  pull_request:
+    paths:
+      - 'conversion_engine/**'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./conversion_engine
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+
+      - name: Analyze Changed Files
+        id: analysis
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          NEXT_PUBLIC_CLAUDE_API_KEY: ${{ secrets.NEXT_PUBLIC_CLAUDE_API_KEY }}
+        run: |
+          echo "analysis_output<<EOF" >> $GITHUB_ENV
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ -f "$file" && "$file" == conversion_engine/* ]]; then
+              echo "### Analyzing $file" >> analysis_results.txt
+              node conversion_engine/analyze.js "$file" >> analysis_results.txt
+              echo "" >> analysis_results.txt
+            fi
+          done
+          cat analysis_results.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Post Comment
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = process.env.analysis_output;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 The Persuasion Engine Analysis 🤖\n\nHere are some suggestions to improve the conversion rate of your changes:\n\n${output}`
+            });
