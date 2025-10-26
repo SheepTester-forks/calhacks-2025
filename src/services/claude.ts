@@ -10,6 +10,10 @@ const anthropic = new Anthropic({
 export const analyzeAdWithClaude = async (
   adCreative: string
 ): Promise<AdAnalysis | null> => {
+  if (adCreative.length > 1000) {
+    console.error(`${adCreative}\n\nthat's too long`);
+    return null;
+  }
   if (!CLAUDE_API_KEY || CLAUDE_API_KEY === 'invalid') {
     console.error('Claude API key is not configured or is invalid.');
     // Return mock data for the hackathon
