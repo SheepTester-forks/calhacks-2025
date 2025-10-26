@@ -1,6 +1,6 @@
 [![beg jules](docs/beg_jules.svg)](https://github.com/SheepTester-forks/calhacks-2025/issues/new?template=jules_issue_template.md)
 
-[devpost](devpost.com/software/what-s-the-best-way-to-tell-people-to-turn-off-their-hotspot)
+[devpost](https://devpost.com/software/what-s-the-best-way-to-tell-people-to-turn-off-their-hotspot)
 
 > [!NOTE]
 > The project mentioned in the Devpost lives in `gdr2/`. all the other files are other hackathon project attempts that didnt get very far because i was busy downloading 6–7 GB
