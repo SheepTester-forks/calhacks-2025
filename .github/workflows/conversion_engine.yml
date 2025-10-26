@@ -4,10 +4,16 @@ on:
   pull_request:
     paths:
       - 'conversion_engine/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'conversion_engine/**'
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    environment: "default hopefully"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
