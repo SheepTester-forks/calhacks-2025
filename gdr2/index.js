@@ -3,7 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { JSDOM } from 'jsdom';
 import cliProgress from 'cli-progress';
-import { spawn } from 'child_process';
 
 const GDR_URL =
   'https://drive.google.com/file/d/1nXjm6xDhWX_TkTD-vrElYGzpKk5NBw6m/view?usp=drivesdk';
@@ -314,18 +313,6 @@ async function main() {
         `Stopped early after downloading ${maxChunksToDownload} chunks as requested.`
       );
     }
-
-    console.log('\nStarting server...');
-    const serverProcess = spawn('node', ['server.js'], {
-      detached: true,
-      stdio: 'inherit',
-      cwd: 'gdr2'
-    });
-
-    serverProcess.unref();
-
-    console.log('Server process started in the background.');
-
   } catch (error) {
     console.error('An error occurred:', error.message);
     if (error.response) {
