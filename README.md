@@ -4,21 +4,20 @@
 
 **AdSim** is a revolutionary platform that allows marketing professionals to test and analyze their creative advertisements against a simulated audience of diverse AI personas.
 
-Upload your ad, and our multi-modal AI will analyze its content, tone, and key features. Then, watch in a real-time chat environment as a variety of AI agents, each with a unique personality and background, react to and discuss your ad. It's an instant, AI-powered focus group at your fingertips.
+Upload your ad, and our AI will analyze its content, tone, and key features, and generate a simulated focus group discussion with audio.
 
-This project merges the analytical power of ad intelligence with the dynamic, unpredictable nature of a social simulator, providing deep, actionable insights for creative teams.
+This project uses Claude for ad analysis and persona generation, and Fish Audio for text-to-speech.
 
 ---
 
 ## Tech Stack
 
 - **Frontend:** Next.js, React, Tailwind CSS
-- **Backend:** Node.js, Express
+- **Backend:** Node.js
 - **AI & Machine Learning:**
-  - **Ad Analysis:** Reka API (for multi-modal analysis)
-  - **AI Personas:** Claude, Janitor AI
+  - **Ad Analysis & Personas:** Claude
   - **Voice Generation:** Fish Audio
-- **Deployment:** Vercel, Docker
+- **Deployment:** Vercel
 
 ---
 
@@ -27,17 +26,12 @@ This project merges the analytical power of ad intelligence with the dynamic, un
 1.  **Ad Uploader:** A simple interface to upload video or image-based advertisements.
 2.  **AI-Powered Analysis:** The platform automatically analyzes the ad for:
     - Sentiment and Tone
-    - Object and Brand Recognition
-    - Demographic Targeting Predictions
+    - Main Themes
+    - Target Demographic Predictions
     - A summary of the creative's message and style.
 3.  **Real-Time Audience Simulation:**
-    - The ad and its analysis are presented in a chat room.
-    - A diverse cast of AI personas (e.g., "Skeptical Steve," "Enthusiastic Emily," "Data-Driven Dana") react to the ad in real-time.
-    - Each persona is an autonomous Fetch.ai agent powered by a unique instance of an LLM like Claude.
-4.  **Interactive Dashboard:**
-    - View the analysis results on a clean, visual dashboard.
-    - Observe the live chat simulation.
-    - (Future) Interact with the AI agents to ask follow-up questions.
+    - The ad and its analysis are presented alongside a simulated chat.
+    - A diverse cast of AI personas react to the ad in real-time, with audio provided for each response.
 
 ---
 

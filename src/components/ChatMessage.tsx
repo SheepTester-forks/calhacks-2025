@@ -1,14 +1,7 @@
 import Image from 'next/image';
+import { ChatTurn } from '@/lib/types';
 
-export interface Message {
-  persona: {
-    name: string;
-    avatar: string;
-  };
-  text: string;
-}
-
-const ChatMessage = ({ message }: { message: Message }) => {
+const ChatMessage = ({ message }: { message: ChatTurn }) => {
   return (
     <div className="flex items-start space-x-4 p-2">
       <Image
@@ -21,6 +14,9 @@ const ChatMessage = ({ message }: { message: Message }) => {
       <div>
         <p className="font-bold">{message.persona.name}</p>
         <p>{message.text}</p>
+        {message.audioUrl && (
+          <audio controls src={message.audioUrl} className="mt-2 w-full" />
+        )}
       </div>
     </div>
   );
