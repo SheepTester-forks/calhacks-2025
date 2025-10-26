@@ -1,36 +1,44 @@
 # Next Steps for AdSim
 
-This document outlines the next steps for developing the AdSim platform.
+This document outlines the next steps for developing the AdSim platform, based on the prioritized list of features and prizes in `prizes_ranked.md`.
 
-## 1. Configure API Keys
+## 1. Implement Tier 1 Features (Core Functionality)
 
-To enable the full functionality of the application, you need to obtain API keys for the following services and add them to the `.env.local` file:
+The immediate priority is to build the core functionality of the AdSim platform. This involves the following tasks:
 
-- `NEXT_PUBLIC_REKA_API_KEY`: [Reka](https://reka.ai/)
-- `NEXT_PUBLIC_CLAUDE_API_KEY`: [Anthropic (Claude)](https://www.anthropic.com/claude)
-- `NEXT_PUBLIC_JANITOR_API_KEY`: [Janitor AI](https://janitorai.com/)
-- `NEXT_PUBLIC_FISH_AUDIO_API_KEY`: [Fish Audio](https://www.fish.audio/)
+- **Configure API Keys:** Obtain API keys for Reka, Claude, and Janitor AI and add them to the `.env.local` file.
+- **Implement Real API Calls:**
+  - `src/services/reka.ts`: Implement ad analysis using the Reka API.
+  - `src/services/claude.ts`: Implement persona response generation using the Claude API.
+  - `src/services/janitor.ts`: Implement the multiplayer chat experience using the Janitor AI API.
+- **Build the Basic UI:** Create the initial user interface for uploading ads and viewing the simulated audience chat.
 
-## 2. Implement Real API Calls
+## 2. Implement Tier 2 Features (High-Impact Enhancements)
 
-The current implementation uses mock data and simulated API calls. The next step is to replace the mock implementations in the `src/services` directory with real API calls to the respective services.
+Once the core functionality is in place, we can move on to the high-impact enhancements. These are stretch goals that will significantly improve the platform.
 
-- `src/services/reka.ts`: Implement the ad analysis using the Reka API.
-- `src/services/claude.ts`: Implement persona response generation using the Claude API.
-- `src/services/janitor.ts`: Implement the multiplayer chat experience using the Janitor AI API.
-- `src/services/fish_audio.ts`: (After creating the file) Implement text-to-speech for the AI personas using the Fish Audio API.
+- **Integrate Fish Audio:**
+  - `src/services/fish_audio.ts`: Implement text-to-speech for the AI personas using the Fish Audio API.
+  - **UI:** Add controls to enable and disable voice generation.
+- **Build the Data Visualization Dashboard:**
+  - Use a library like Chart.js or D3.js to create a visually appealing dashboard for the ad analysis results.
+  - This addresses the **Warp** prize.
+- **Focus on Design and Usability:**
+  - Refine the UI/UX to make the platform intuitive and easy to use.
+  - This addresses the **Creao** prizes.
 
-## 3. Build Out the UI
+## 3. Implement Tier 3 Features (Supporting Features)
 
-The current UI is basic and can be improved. Here are some suggestions:
+These features can be implemented if time permits.
 
-- **Dashboard:** Create a more visually appealing and informative dashboard for the ad analysis results. Consider using charts and graphs to visualize the data.
-- **Interactive Chat:** Allow the user to interact with the AI personas by asking follow-up questions.
+- **Workflow Automations:** Use Composio and Postman to create integrations with external tools like Slack and Jira.
+- **Explore Additional Models:** Investigate using open-source models (Annapurna) or other LLM providers (Lava) for specialized tasks.
 
-## 4. Add User Authentication
+## 4. General Tasks
 
-Implement a user authentication system to allow users to save their ad analysis results and manage their projects.
+- **User Authentication:** Implement a user authentication system to allow users to save their projects.
+- **Deployment:** Deploy the application to Vercel for sharing and testing.
 
-## 5. Deploy to Vercel
+---
 
-The project is set up to be easily deployed to Vercel. Once the API keys are configured, you can deploy the application to share it with others.
+For a detailed breakdown of the prizes and their alignment with these features, please refer to the `prizes_ranked.md` file.
