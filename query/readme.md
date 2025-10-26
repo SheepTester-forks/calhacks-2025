@@ -1,5 +1,7 @@
 # Query Planner Challenge
 
+https://docs.google.com/document/d/1k1J3HrCThfZyI2PdwgSOwGpT0Vt8Wv_QPhexhhZSatE/edit?tab=t.0
+
 ## Overview
 
 Every day, more than **1.6 billion people** in the world will see an **AppLovin ad** – which means behind the scenes, we’re processing and **optimizing against massive volumes** of data. Impressions, installs, purchases, bids – all of it needs to be queried, aggregated, and analyzed across numerous dimensions, fast. 
